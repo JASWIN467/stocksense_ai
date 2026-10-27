@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — StockSense AI Enterprise</title>
+    <meta name="description" content="Sign in to StockSense AI Intelligent Demand Forecasting & Continuous-Review Inventory Management System.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Ambient Background Lighting -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <div class="login-page-wrapper">
+        <div class="login-container">
+            
+            <!-- LEFT SECTION: BRANDING & PRODUCT IDENTITY -->
+            <section class="login-branding-panel">
+                <div class="branding-top">
+                    <!-- Brand Header -->
+                    <div class="auth-brand-header">
+                        <div class="brand-logo-icon">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <div class="brand-details">
+                            <span class="brand-title">StockSense <span class="gradient-text">AI</span></span>
+                            <span class="brand-edition">Enterprise Analytics</span>
+                        </div>
+                    </div>
+
+                    <!-- Hero Badge & Headline -->
+                    <div class="auth-badge-pill">
+                        <i class="fa-solid fa-chart-line"></i> Demand Intelligence Platform
+                    </div>
+                    <h1 class="auth-hero-headline">
+                        Make smarter <span class="gradient-cyan-text">inventory decisions.</span>
+                    </h1>
+                    <p class="auth-hero-subtext">
+                        Intelligent Demand Forecasting and Continuous-Review Inventory Management. Analyze multi-store demand signals, optimize safety stock thresholds, and prevent stockouts with machine learning.
+                    </p>
+
+                    <!-- Subtle Forecasting Visual Telemetry Card -->
+                    <div class="auth-telemetry-card" aria-label="Forecast Telemetry Visual">
+                        <div class="telemetry-card-top">
+                            <div class="telemetry-sku-info">
+                                <span class="telemetry-sku-name">
+                                    <i class="fa-solid fa-box text-cyan"></i> SKU P0001 (Groceries)
+                                </span>
+                                <span class="telemetry-store-tag">Store S001 • North Region</span>
+                            </div>
+                            <span class="telemetry-live-pill">
+                                <span class="pulse-dot"></span> LightGBM Champion
+                            </span>
+                        </div>
+
+                        <!-- SVG 7-Day Forecast Curve with Confidence Interval Band -->
+                        <div class="telemetry-svg-container">
+                            <svg viewBox="0 0 460 110" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="ciGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.25" />
+                                        <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.02" />
+                                    </linearGradient>
+                                    <linearGradient id="lineGlow" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#38bdf8" />
+                                        <stop offset="50%" stop-color="#06b6d4" />
+                                        <stop offset="100%" stop-color="#10b981" />
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Grid lines -->
+                                <line x1="20" y1="20" x2="440" y2="20" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                                <line x1="20" y1="50" x2="440" y2="50" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                                <line x1="20" y1="80" x2="440" y2="80" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+
+                                <!-- Safety Stock Threshold Line -->
+                                <line x1="20" y1="78" x2="440" y2="78" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.8" />
+                                <text x="365" y="74" fill="#10b981" font-size="9" font-family="'JetBrains Mono', monospace" font-weight="600">Safety Stock (42)</text>
+
+                                <!-- 95% Confidence Interval Shaded Area -->
+                                <polygon points="
+                                    30,35  95,28  160,20  225,25  290,16  355,24  420,18
+                                    420,70 355,75 290,66  225,72  160,68  95,74  30,76
+                                " fill="url(#ciGradient)" />
+
+                                <!-- Predicted Demand Trajectory Line -->
+                                <polyline points="30,55 95,50 160,44 225,48 290,38 355,46 420,40" 
+                                    fill="none" stroke="url(#lineGlow)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+                                <!-- Data points -->
+                                <circle cx="30" cy="55" r="3" fill="#38bdf8" />
+                                <circle cx="95" cy="50" r="3" fill="#38bdf8" />
+                                <circle cx="160" cy="44" r="3" fill="#06b6d4" />
+                                <circle cx="225" cy="48" r="4.5" fill="#fff" stroke="#06b6d4" stroke-width="2" />
+                                <circle cx="290" cy="38" r="3" fill="#06b6d4" />
+                                <circle cx="355" cy="46" r="3" fill="#10b981" />
+                                <circle cx="420" cy="40" r="3" fill="#10b981" />
+
+                                <!-- Tooltip highlight above active point -->
+                                <rect x="195" y="10" width="60" height="18" rx="4" fill="#0f172a" stroke="#06b6d4" stroke-width="1" />
+                                <text x="225" y="22" fill="#fff" font-size="9.5" font-family="'JetBrains Mono', monospace" font-weight="700" text-anchor="middle">153 Units</text>
+                            </svg>
+                        </div>
+
+                        <!-- Mini metrics summary -->
+                        <div class="telemetry-metrics-bar">
+                            <div class="telemetry-stat">
+                                <span class="stat-label">Predicted</span>
+                                <span class="stat-val text-cyan">153 <small style="font-size:10px; color:#94a3b8;">Units</small></span>
+                            </div>
+                            <div class="telemetry-stat">
+                                <span class="stat-label">Safety Stock</span>
+                                <span class="stat-val text-emerald">42 <small style="font-size:10px; color:#94a3b8;">Units</small></span>
+                            </div>
+                            <div class="telemetry-stat">
+                                <span class="stat-label">Reorder Pt</span>
+                                <span class="stat-val text-amber">87 <small style="font-size:10px; color:#94a3b8;">Units</small></span>
+                            </div>
+                            <div class="telemetry-stat">
+                                <span class="stat-label">Risk Level</span>
+                                <span class="stat-val text-emerald">1.2% <small style="font-size:9.5px; color:#34d399;">Low</small></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Core Platform Capabilities -->
+                    <div class="auth-features-list">
+                        <div class="auth-feature-item">
+                            <div class="auth-feature-icon icon-cyan">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <span><strong>Time-Aware ML Regressors</strong> with lag features, promotional uplift & seasonality.</span>
+                        </div>
+                        <div class="auth-feature-item">
+                            <div class="auth-feature-icon icon-emerald">
+                                <i class="fa-solid fa-boxes-packing"></i>
+                            </div>
+                            <span><strong>Continuous-Review (s, Q) Policy</strong> with service-level based safety stocks.</span>
+                        </div>
+                        <div class="auth-feature-item">
+                            <div class="auth-feature-icon icon-blue">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <span><strong>Proactive Stockout Prevention</strong> with urgency scoring and explainable attributions.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Left Footer -->
+                <div class="branding-footer">
+                    <span><i class="fa-solid fa-shield"></i> StockSense AI Platform v2.4</span>
+                    <span>Operations Research & Analytics</span>
+                </div>
+            </section>
+
+            <!-- RIGHT SECTION: LOGIN FORM -->
+            <section class="login-form-panel">
+                <!-- Portal Security Badge -->
+                <div class="auth-portal-badge">
+                    <i class="fa-solid fa-lock"></i> Secure Enterprise Portal
+                </div>
+
+                <!-- Form Header -->
+                <h2 class="auth-form-title">Welcome back</h2>
+                <p class="auth-form-desc">Sign in to access your forecasting dashboard.</p>
+
+                <!-- Quick Demo Access Bar -->
+                <div class="demo-quick-bar" id="demoQuickBar">
+                    <div class="demo-bar-top">
+                        <span class="demo-bar-label">
+                            <i class="fa-solid fa-bolt"></i> Instant Demo Access
+                        </span>
+                        <span class="demo-bar-hint">Click to auto-fill credentials</span>
+                    </div>
+                    <div class="demo-pill-group">
+                        <button type="button" class="btn-demo-pill" id="btnFillAnalyst" title="Auto-fill Analyst Credentials (demo@stocksense.ai)">
+                            <i class="fa-solid fa-user-check" style="color: #38bdf8;"></i> Lead Analyst
+                        </button>
+                        <button type="button" class="btn-demo-pill" id="btnFillAdmin" title="Auto-fill Director Credentials (admin@stocksense.ai)">
+                            <i class="fa-solid fa-user-shield" style="color: #10b981;"></i> Supply Chain VP
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation (Sign In / Register / Reset) -->
+                <div class="auth-tab-bar" role="tablist">
+                    <button class="auth-tab active" id="tabBtnSignIn" data-tab="pane-signin" role="tab" aria-selected="true">
+                        Sign In
+                    </button>
+                    <button class="auth-tab" id="tabBtnRegister" data-tab="pane-register" role="tab" aria-selected="false">
+                        Create Account
+                    </button>
+                    <button class="auth-tab" id="tabBtnRecover" data-tab="pane-recover" role="tab" aria-selected="false">
+                        Reset Password
+                    </button>
+                </div>
+
+                <!-- Status / Alert Message Container -->
+                <div class="auth-alert" id="authAlert" role="alert">
+                    <i class="fa-solid fa-circle-exclamation" id="authAlertIcon"></i>
+                    <span id="authAlertText">Notification message</span>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- TAB PANE 1: SIGN IN FORM                   -->
+                <!-- ========================================== -->
+                <form class="auth-form-pane active" id="pane-signin" novalidate>
+                    <!-- Email Field -->
+                    <div class="auth-field-group">
+                        <label for="signinEmail">
+                            <i class="fa-solid fa-envelope"></i> Work Email Address
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-solid fa-at input-leading-icon"></i>
+                            <input 
+                                type="email" 
+                                id="signinEmail" 
+                                name="email" 
+                                class="auth-input" 
+                                placeholder="analyst@stocksense.ai" 
+                                autocomplete="email"
+                                required
+                            >
+                        </div>
+                        <span class="auth-field-error" id="signinEmailError">Please enter a valid work email address.</span>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="auth-field-group">
+                        <label for="signinPassword">
+                            <i class="fa-solid fa-lock"></i> Password
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-solid fa-key input-leading-icon"></i>
+                            <input 
+                                type="password" 
+                                id="signinPassword" 
+                                name="password" 
+                                class="auth-input" 
+                                placeholder="••••••••••••" 
+                                autocomplete="current-password"
+                                required
+                            >
+                            <button type="button" class="btn-toggle-password" id="btnToggleSigninPassword" title="Show or hide password" aria-label="Toggle password visibility">
+                                <i class="fa-regular fa-eye" id="signinEyeIcon"></i>
+                            </button>
+                        </div>
+                        <span class="auth-field-error" id="signinPasswordError">Password is required.</span>
+                    </div>
+
+                    <!-- Options Row: Remember Me & Forgot Password -->
+                    <div class="auth-options-row">
+                        <label class="auth-remember-label">
+                            <input type="checkbox" id="rememberMe" name="remember_me">
+                            <span>Remember this device</span>
+                        </label>
+                        <button type="button" class="auth-link" id="linkForgotPassword">
+                            Forgot password?
+                        </button>
+                    </div>
+
+                    <!-- Primary Sign In Submit Button -->
+                    <button type="submit" class="btn-primary btn-block btn-auth-submit" id="btnSignInSubmit">
+                        <i class="fa-solid fa-arrow-right-to-bracket" id="signinBtnIcon"></i>
+                        <span id="signinBtnText">Sign In to Dashboard</span>
+                    </button>
+                </form>
+
+                <!-- ========================================== -->
+                <!-- TAB PANE 2: CREATE ACCOUNT FORM            -->
+                <!-- ========================================== -->
+                <form class="auth-form-pane" id="pane-register" novalidate>
+                    <!-- Full Name -->
+                    <div class="auth-field-group">
+                        <label for="regFullName">
+                            <i class="fa-solid fa-user"></i> Full Name
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-solid fa-id-badge input-leading-icon"></i>
+                            <input 
+                                type="text" 
+                                id="regFullName" 
+                                name="full_name" 
+                                class="auth-input" 
+                                placeholder="e.g. Jordan Miller" 
+                                autocomplete="name"
+                                required
+                            >
+                        </div>
+                        <span class="auth-field-error" id="regNameError">Full name is required.</span>
+                    </div>
+
+                    <!-- Work Email -->
+                    <div class="auth-field-group">
+                        <label for="regEmail">
+                            <i class="fa-solid fa-envelope"></i> Work Email Address
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-solid fa-at input-leading-icon"></i>
+                            <input 
+                                type="email" 
+                                id="regEmail" 
+                                name="email" 
+                                class="auth-input" 
+                                placeholder="name@enterprise.com" 
+                                autocomplete="email"
+                                required
+                            >
+                        </div>
+                        <span class="auth-field-error" id="regEmailError">Please enter a valid email address.</span>
+                    </div>
+
+                    <!-- Role Selection -->
+                    <div class="auth-field-group">
+                        <label for="regRole">
+                            <i class="fa-solid fa-briefcase"></i> Organizational Role
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-solid fa-sitemap input-leading-icon"></i>
+                            <select id="regRole" name="role" class="auth-input" style="padding-left: 38px;">
+                                <option value="Inventory Analyst" selected>Inventory Analyst</option>
+                                <option value="Supply Chain Planner">Supply Chain Planner</option>
+                                <option value="Operations Director">Operations Director</option>
+                                <option value="Data Scientist">Data Scientist</option>
+                                <option value="Store Manager">Store Manager</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="auth-field-group">
+                        <label for="regPassword">
+                            <i class="fa-solid fa-lock"></i> Create Password (min 6 characters)
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-solid fa-key input-leading-icon"></i>
+                            <input 
+                                type="password" 
+                                id="regPassword" 
+                                name="password" 
+                                class="auth-input" 
+                                placeholder="••••••••••••" 
+                                autocomplete="new-password"
+                                required
+                            >
+                            <button type="button" class="btn-toggle-password" id="btnToggleRegPassword" title="Show or hide password" aria-label="Toggle password visibility">
+                                <i class="fa-regular fa-eye" id="regEyeIcon"></i>
+                            </button>
+                        </div>
+                        <span class="auth-field-error" id="regPasswordError">Password must be at least 6 characters.</span>
+                    </div>
+
+                    <!-- Register Submit Button -->
+                    <button type="submit" class="btn-primary btn-block btn-auth-submit" id="btnRegisterSubmit">
+                        <i class="fa-solid fa-user-plus" id="regBtnIcon"></i>
+                        <span id="regBtnText">Create Enterprise Account</span>
+                    </button>
+                </form>
+
+                <!-- ========================================== -->
+                <!-- TAB PANE 3: PASSWORD RECOVERY              -->
+                <!-- ========================================== -->
+                <form class="auth-form-pane" id="pane-recover" novalidate>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; line-height: 1.5;">
+                        Enter your registered enterprise email address to verify your account and receive recovery credentials.
+                    </p>
+
+                    <div class="auth-field-group">
+                        <label for="recoverEmail">
+                            <i class="fa-solid fa-envelope"></i> Registered Email
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-solid fa-at input-leading-icon"></i>
+                            <input 
+                                type="email" 
+                                id="recoverEmail" 
+                                name="email" 
+                                class="auth-input" 
+                                placeholder="analyst@stocksense.ai" 
+                                required
+                            >
+                        </div>
+                        <span class="auth-field-error" id="recoverEmailError">Please enter a valid email address.</span>
+                    </div>
+
+                    <!-- Optional Token Direct Reset Box (Shown if token generated or provided) -->
+                    <div id="tokenResetSection" style="display: none; flex-direction: column; gap: 14px; margin-top: 8px;">
+                        <div class="auth-field-group">
+                            <label for="resetToken">
+                                <i class="fa-solid fa-ticket"></i> Reset Security Token
+                            </label>
+                            <div class="auth-input-wrapper">
+                                <i class="fa-solid fa-shield-check input-leading-icon"></i>
+                                <input type="text" id="resetToken" class="auth-input" placeholder="Security token...">
+                            </div>
+                        </div>
+
+                        <div class="auth-field-group">
+                            <label for="resetNewPassword">
+                                <i class="fa-solid fa-key"></i> New Password
+                            </label>
+                            <div class="auth-input-wrapper">
+                                <i class="fa-solid fa-lock input-leading-icon"></i>
+                                <input type="password" id="resetNewPassword" class="auth-input" placeholder="Min 6 characters">
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-primary btn-block btn-auth-submit" id="btnApplyPasswordReset">
+                            <i class="fa-solid fa-check"></i> Set New Password
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-block btn-auth-submit" id="btnRecoverSubmit">
+                        <i class="fa-solid fa-paper-plane" id="recoverBtnIcon"></i>
+                        <span id="recoverBtnText">Send Recovery Request</span>
+                    </button>
+                </form>
+
+                <!-- Security Assurance Footer -->
+                <div class="auth-security-notice">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Server-side salted PBKDF2/Scrypt hashing with HttpOnly session cookies.</span>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Notification Toast Element -->
+    <div class="toast-notification" id="toastNotification">
+        <i class="fa-solid fa-circle-check toast-icon"></i>
+        <span class="toast-message" id="toastMessage">Action completed successfully.</span>
+    </div>
+
+    <!-- Login JavaScript Controller -->
+    <script src="/static/js/login.js"></script>
+</body>
+</html>

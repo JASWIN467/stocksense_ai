@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  stocksense-app:
+    build: .
+    container_name: stocksense_ai
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_SECRET_KEY=stocksense-enterprise-production-secure-key-2026
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

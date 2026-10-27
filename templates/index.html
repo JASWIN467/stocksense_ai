@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockSense AI — Intelligent Demand Forecasting & Inventory Control System</title>
+    <meta name="description" content="Enterprise retail demand forecasting and continuous-review inventory control system powered by time-aware machine learning pipelines, safety stock optimization, and automated replenishment.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Ambient Background Lighting -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <div class="app-container">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="app-sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div class="brand-details">
+                    <span class="brand-title">StockSense <span class="gradient-text">AI</span></span>
+                    <span class="brand-edition">Enterprise Analytics</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">CORE FORECASTING</div>
+                <button class="nav-item active" data-pane="pane-summary" id="nav-summary">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Forecast Summary</span>
+                </button>
+                <button class="nav-item" data-pane="pane-product" id="nav-product">
+                    <i class="fa-solid fa-barcode"></i>
+                    <span>Product-Level Forecast</span>
+                </button>
+                <button class="nav-item" data-pane="pane-csv" id="nav-csv">
+                    <i class="fa-solid fa-file-csv"></i>
+                    <span>CSV Validation & Batch</span>
+                </button>
+                <button class="nav-item" data-pane="pane-history" id="nav-history">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Forecast History</span>
+                </button>
+
+                <div class="nav-section-label">INVENTORY OPTIMIZATION</div>
+                <button class="nav-item" data-pane="pane-inventory" id="nav-inventory">
+                    <i class="fa-solid fa-boxes-packing"></i>
+                    <span>Inventory Recommendation</span>
+                </button>
+                <button class="nav-item" data-pane="pane-alerts" id="nav-alerts">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Stockout Risk Alerts</span>
+                    <span class="badge-alert-count" id="sidebarAlertCount">0</span>
+                </button>
+                <button class="nav-item" data-pane="pane-category" id="nav-category">
+                    <i class="fa-solid fa-tags"></i>
+                    <span>Demand by Category</span>
+                </button>
+
+                <div class="nav-section-label">ADVANCED ANALYTICS</div>
+                <button class="nav-item" data-pane="pane-seasonality" id="nav-seasonality">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Sales & Seasonality</span>
+                </button>
+                <button class="nav-item" data-pane="pane-pricing" id="nav-pricing">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Price Impact & What-If</span>
+                </button>
+                <button class="nav-item" data-pane="pane-benchmark" id="nav-benchmark">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Model Benchmark & XAI</span>
+                </button>
+                <button class="nav-item" data-pane="pane-reports" id="nav-reports">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    <span>Reports & Export Hub</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="engine-status-card">
+                    <div class="status-indicator">
+                        <span class="pulse-dot"></span>
+                        <span class="status-text">ML Pipeline Active</span>
+                    </div>
+                    <span class="engine-model-sub" id="footerActiveModel">LightGBM Champion</span>
+                </div>
+                <a href="/api/export/pdf/academic_summary" class="btn-quick-pdf" title="Download Academic Project Capstone Summary">
+                    <i class="fa-solid fa-file-pdf"></i> Academic Capstone PDF
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="app-workspace">
+            
+            <!-- GLOBAL TOP BAR -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <h2 class="page-title" id="pageTitle">Forecast Summary</h2>
+                    <span class="page-desc" id="pageDesc">Continuous-review demand forecasting and safety stock analytics.</span>
+                </div>
+
+                <div class="topbar-controls">
+                    <!-- Global Store Selector -->
+                    <div class="control-box">
+                        <label for="globalStoreSelect"><i class="fa-solid fa-shop"></i> Store</label>
+                        <select id="globalStoreSelect" class="form-select-sm">
+                            <option value="S001" selected>Store S001 (North)</option>
+                            <option value="S002">Store S002 (South)</option>
+                            <option value="S003">Store S003 (East)</option>
+                            <option value="S004">Store S004 (West)</option>
+                            <option value="S005">Store S005 (North)</option>
+                        </select>
+                    </div>
+
+                    <!-- Global Product Selector -->
+                    <div class="control-box">
+                        <label for="globalProductSelect"><i class="fa-solid fa-box"></i> SKU</label>
+                        <select id="globalProductSelect" class="form-select-sm">
+                            <!-- Populated via API -->
+                        </select>
+                    </div>
+
+                    <!-- Model Choice Selector -->
+                    <div class="control-box">
+                        <label for="globalModelSelect"><i class="fa-solid fa-brain"></i> Model</label>
+                        <select id="globalModelSelect" class="form-select-sm">
+                            <option value="champion" selected>LightGBM (Champion)</option>
+                            <option value="baseline_lr">Linear Regression (Baseline)</option>
+                            <option value="rf">Random Forest Regressor</option>
+                        </select>
+                    </div>
+
+                    <!-- Action Refresh -->
+                    <button class="btn-icon-action" id="btnGlobalRefresh" title="Refresh Current View">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+
+                    <!-- Authenticated User Profile & Sign Out -->
+                    <div class="user-profile-badge" id="topbarUserProfile" title="Authenticated Enterprise Session">
+                        <div class="user-avatar-circle" id="userAvatarInitials">JA</div>
+                        <div class="user-info-text">
+                            <span class="user-name-tag" id="userNameLabel">Jaswin</span>
+                            <span class="user-role-tag" id="userRoleLabel">Lead Analyst</span>
+                        </div>
+                        <a href="/logout" class="btn-signout" id="btnSignOut" title="Sign out of session" aria-label="Sign out">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT PANES -->
+            <main class="pane-container">
+                
+                <!-- ============================================================== -->
+                <!-- PANE 1: FORECAST SUMMARY (Matches Figure 4.5.1)                -->
+                <!-- ============================================================== -->
+                <section class="content-pane active" id="pane-summary">
+                    <!-- Header Filters Banner -->
+                    <div class="pane-sub-header">
+                        <div class="sub-header-left">
+                            <span class="sub-title">Inventory Demand Forecast</span>
+                            <span class="sku-tag" id="summarySkuTag">Product P0001 (Store S001 - North Region)</span>
+                        </div>
+                        <div class="sub-header-right">
+                            <span class="horizon-badge"><i class="fa-solid fa-calendar-check"></i> Next 24h & 7-Day Horizon</span>
+                        </div>
+                    </div>
+
+                    <!-- 4 Key Metric Cards (Cyan, Emerald, Amber, Red) -->
+                    <div class="metric-cards-grid">
+                        <!-- Card 1: Predicted Demand -->
+                        <div class="metric-card card-cyan">
+                            <div class="card-top">
+                                <div class="card-icon-title">
+                                    <i class="fa-solid fa-arrow-trend-up"></i>
+                                    <span>Predicted Demand</span>
+                                </div>
+                                <span class="badge-sub" id="summaryDemandCI">95% CI: [120 - 186]</span>
+                            </div>
+                            <div class="card-value-row">
+                                <span class="card-value" id="summaryPredictedDemand">153</span>
+                                <span class="card-unit">Units</span>
+                            </div>
+                            <div class="card-mini-chart">
+                                <canvas id="sparklineDemand" height="60"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Current Inventory -->
+                        <div class="metric-card card-emerald">
+                            <div class="card-top">
+                                <div class="card-icon-title">
+                                    <i class="fa-solid fa-cubes-stacked"></i>
+                                    <span>Current Inventory</span>
+                                </div>
+                                <span class="badge-sub" id="summaryDaysSupply">1.2 Days Supply</span>
+                            </div>
+                            <div class="card-value-row">
+                                <span class="card-value" id="summaryCurrentInventory">180</span>
+                                <span class="card-unit">Units</span>
+                            </div>
+                            <div class="card-mini-chart">
+                                <canvas id="sparklineInventory" height="60"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Reorder Point (ROP) -->
+                        <div class="metric-card card-amber">
+                            <div class="card-top">
+                                <div class="card-icon-title">
+                                    <i class="fa-solid fa-bell"></i>
+                                    <span>Reorder Point (ROP)</span>
+                                </div>
+                                <span class="badge-sub" id="summarySafetyStockBadge">SS: 35 Units</span>
+                            </div>
+                            <div class="card-value-row">
+                                <span class="card-value" id="summaryReorderPoint">485</span>
+                                <span class="card-unit">Units</span>
+                            </div>
+                            <div class="card-mini-chart">
+                                <canvas id="sparklineROP" height="60"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Stockout Risk -->
+                        <div class="metric-card card-rose">
+                            <div class="card-top">
+                                <div class="card-icon-title">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <span>Stockout Risk</span>
+                                </div>
+                                <span class="badge-sub" id="summaryLeadTimeBadge">3-Day Lead Time</span>
+                            </div>
+                            <div class="card-value-row">
+                                <span class="card-value" id="summaryStockoutRisk">18.5%</span>
+                                <span class="card-unit" id="summaryRiskTier">Elevated</span>
+                            </div>
+                            <div class="card-mini-chart">
+                                <canvas id="sparklineRisk" height="60"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Replenishment Decision Banner -->
+                    <div class="replenishment-action-banner" id="summaryActionBanner">
+                        <div class="action-status-box" id="summaryActionStatusBox">
+                            REORDER RECOMMENDED
+                        </div>
+                        <div class="action-details">
+                            <div class="action-headline" id="summaryOrderHeadline">
+                                Order <strong>320 Units</strong>
+                            </div>
+                            <div class="action-sub" id="summarySafetySub">
+                                With safety stock buffer <strong>35 Units</strong> | Service Level 95% (Z=1.65)
+                            </div>
+                        </div>
+                        <div class="action-export-btn">
+                            <button class="btn-primary" id="btnDownloadSummaryPdf">
+                                <i class="fa-solid fa-file-pdf"></i> Export Forecast PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dual-Axis Forecast Time-Series Chart -->
+                    <div class="glass-card chart-card-lg">
+                        <div class="card-header-bar">
+                            <div class="header-left">
+                                <i class="fa-solid fa-chart-line text-cyan"></i>
+                                <h3>30-Day Historical Sales vs. 7-Day Forward Forecast</h3>
+                            </div>
+                            <div class="header-tags">
+                                <span class="tag-pill"><i class="fa-solid fa-circle text-cyan"></i> Actual Sales</span>
+                                <span class="tag-pill"><i class="fa-solid fa-circle text-emerald"></i> Inventory Level</span>
+                                <span class="tag-pill"><i class="fa-solid fa-circle text-purple"></i> 7-Day Forecast & 95% CI</span>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="mainTimeseriesChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 2: PRODUCT-LEVEL FORECAST (Matches Figure 4.5.2)          -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-product">
+                    <div class="two-column-layout">
+                        <!-- Left Card: Model Feature Inputs -->
+                        <div class="glass-card feature-inputs-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-sliders text-cyan"></i>
+                                    <h3>MODEL FEATURE INPUTS</h3>
+                                </div>
+                                <span class="badge-status-pill">Scenario Config</span>
+                            </div>
+
+                            <form id="productForecastForm" class="inputs-grid-form">
+                                <div class="form-row-duo">
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-shop"></i> Store Location</label>
+                                        <select id="prodStoreSelect" class="form-input">
+                                            <option value="S001">Store S001 (North Region)</option>
+                                            <option value="S002">Store S002 (South Region)</option>
+                                            <option value="S003">Store S003 (East Region)</option>
+                                            <option value="S004">Store S004 (West Region)</option>
+                                            <option value="S005">Store S005 (North Region)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-box-open"></i> Product SKU</label>
+                                        <select id="prodProductSelect" class="form-input"></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row-duo">
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-calendar"></i> Target Forecast Date</label>
+                                        <input type="date" id="prodDateInput" class="form-input">
+                                    </div>
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-clock"></i> Forecast Horizon (Days)</label>
+                                        <input type="number" id="prodHorizonInput" class="form-input" value="7" min="1" max="30">
+                                    </div>
+                                </div>
+
+                                <div class="form-row-duo">
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-tag"></i> Unit Retail Price (₹)</label>
+                                        <input type="number" id="prodPriceInput" class="form-input" step="0.5" value="45.00" min="1">
+                                    </div>
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-percent"></i> Promotional Discount (%)</label>
+                                        <input type="number" id="prodDiscountInput" class="form-input" value="15" min="0" max="80">
+                                    </div>
+                                </div>
+
+                                <div class="form-row-duo">
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-shop-lock"></i> Competitor Price (₹)</label>
+                                        <input type="number" id="prodCompPriceInput" class="form-input" step="0.5" value="48.50" min="1">
+                                    </div>
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-cloud-sun"></i> Weather Condition</label>
+                                        <select id="prodWeatherSelect" class="form-input">
+                                            <option value="Sunny" selected>Sunny</option>
+                                            <option value="Cloudy">Cloudy</option>
+                                            <option value="Rainy">Rainy</option>
+                                            <option value="Snowy">Snowy</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row-duo">
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-bullhorn"></i> Holiday / Promotion</label>
+                                        <select id="prodHolidaySelect" class="form-input">
+                                            <option value="1" selected>Yes (Active Promotional Event)</option>
+                                            <option value="0">No (Normal Business Day)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-cubes"></i> Current On-Hand Stock</label>
+                                        <input type="number" id="prodInventoryInput" class="form-input" value="180" min="0">
+                                    </div>
+                                </div>
+
+                                <div class="form-row-duo">
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-truck-ramp-box"></i> Incoming Orders (Open PO)</label>
+                                        <input type="number" id="prodIncomingInput" class="form-input" value="0" min="0">
+                                    </div>
+                                    <div class="form-field">
+                                        <label><i class="fa-solid fa-truck-fast"></i> Lead Time (Days)</label>
+                                        <input type="number" id="prodLeadTimeInput" class="form-input" value="3" min="1" max="14">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-primary btn-block" id="btnRunProductForecast">
+                                    <i class="fa-solid fa-bolt"></i> Generate Product Forecast & Inventory Policy
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Right Card: ML Model Output & Feature Attribution -->
+                        <div class="glass-card model-output-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-microchip text-emerald"></i>
+                                    <h3>ML MODEL OUTPUT</h3>
+                                </div>
+                                <span class="badge-status-pill pill-model" id="prodModelBadge">LightGBM Regressor (Champion)</span>
+                            </div>
+
+                            <div class="output-headline-center">
+                                <span class="output-caption">Predicted Daily Demand:</span>
+                                <div class="output-big-number">
+                                    <span id="prodOutputUnits">153</span> <span class="unit-text">Units</span>
+                                </div>
+                                <span class="output-ci" id="prodOutputCI">95% CI: [120 – 186]</span>
+                                <span class="output-rev" id="prodOutputRevenue">Estimated Daily Revenue: ₹6,502.50</span>
+                            </div>
+
+                            <!-- Feature Attribution Breakdown -->
+                            <div class="feature-importance-section">
+                                <div class="section-title-sub">
+                                    <span>LOCAL FEATURE ATTRIBUTION (DELTA FROM BASELINE)</span>
+                                </div>
+                                <div class="attribution-bars" id="prodAttributionBars">
+                                    <!-- Rendered dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Inventory Policy Summary Box -->
+                            <div class="inventory-quick-summary" id="prodInventoryQuickSummary">
+                                <div class="quick-metric">
+                                    <span class="qm-label">Safety Stock</span>
+                                    <span class="qm-value" id="prodQuickSS">35 Units</span>
+                                </div>
+                                <div class="quick-metric">
+                                    <span class="qm-label">Reorder Point</span>
+                                    <span class="qm-value" id="prodQuickROP">485 Units</span>
+                                </div>
+                                <div class="quick-metric">
+                                    <span class="qm-label">Stockout Risk</span>
+                                    <span class="qm-value text-rose" id="prodQuickRisk">18.5%</span>
+                                </div>
+                                <div class="quick-metric">
+                                    <span class="qm-label">Recommended Order</span>
+                                    <span class="qm-value text-emerald" id="prodQuickOrder">320 Units</span>
+                                </div>
+                            </div>
+
+                            <div class="academic-note-box">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Future weather, promotions, and pricing are scenario assumptions for simulation; continuous-review safety stock absorbs variance.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 3: CSV VALIDATION & FORECASTING (Matches Figure 4.5.3)   -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-csv">
+                    <div class="two-column-layout">
+                        <!-- Left: File Upload & Data Preview -->
+                        <div class="glass-card csv-upload-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-cloud-arrow-up text-cyan"></i>
+                                    <h3>CSV Batch Dataset Upload</h3>
+                                </div>
+                                <span class="badge-status-pill pill-neutral" id="csvSchemaBadge">Awaiting Upload</span>
+                            </div>
+
+                            <!-- Drag & Drop Zone -->
+                            <div class="drop-zone" id="csvDropZone">
+                                <i class="fa-solid fa-file-csv drop-icon"></i>
+                                <span class="drop-title" id="dropFileName">Drag and drop your retail CSV file here</span>
+                                <span class="drop-sub">Supported schema: Date, Store ID, Product ID, Price, Inventory Level, Discount</span>
+                                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 8px;">
+                                    <label for="csvFileInput" class="btn-secondary btn-file-picker">
+                                        <i class="fa-solid fa-folder-open"></i> Browse Local File
+                                    </label>
+                                    <a href="/api/download_sample_csv" class="btn-secondary btn-file-picker" style="text-decoration: none;" title="Download verified sample retail CSV template">
+                                        <i class="fa-solid fa-download"></i> Download Sample CSV
+                                    </a>
+                                </div>
+                                <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                            </div>
+
+                            <!-- File Stats Summary -->
+                            <div class="file-stat-chips" id="csvFileStats" style="display: none;">
+                                <div class="stat-chip"><i class="fa-solid fa-table"></i> <span id="statRowCount">0 Records</span></div>
+                                <div class="stat-chip"><i class="fa-solid fa-columns"></i> <span id="statColCount">0 Columns</span></div>
+                                <div class="stat-chip"><i class="fa-solid fa-circle-check text-emerald"></i> <span id="statNullCount">0 Nulls</span></div>
+                                <div class="stat-chip"><i class="fa-solid fa-clone text-cyan"></i> <span id="statDupCount">0 Duplicates</span></div>
+                            </div>
+
+                            <!-- Data Preview Table -->
+                            <div class="data-preview-section">
+                                <div class="section-title-sub">
+                                    <span>DATA PREVIEW (FIRST 8 ROWS)</span>
+                                </div>
+                                <div class="table-responsive-sm">
+                                    <table class="data-table" id="csvPreviewTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Store ID</th>
+                                                <th>Product ID</th>
+                                                <th>Price</th>
+                                                <th>Inventory</th>
+                                                <th>Discount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="csvPreviewTableBody">
+                                            <tr><td colspan="6" class="text-center text-muted">Upload a CSV file or test batch to preview observations.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Batch Demand Forecasting Engine -->
+                        <div class="glass-card batch-engine-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-gears text-purple"></i>
+                                    <h3>Batch Demand Forecasting</h3>
+                                </div>
+                                <span class="badge-status-pill pill-model">LightGBM v1.5</span>
+                            </div>
+
+                            <!-- Progress & Status -->
+                            <div class="batch-progress-box">
+                                <div class="progress-bar-track">
+                                    <div class="progress-bar-fill" id="batchProgressFill" style="width: 0%;"></div>
+                                </div>
+                                <div class="progress-percent-row">
+                                    <span id="batchProgressLabel">Ready to run batch</span>
+                                    <span id="batchPercentText">0%</span>
+                                </div>
+                            </div>
+
+                            <div class="batch-hero-card" id="batchHeroCard">
+                                <span class="batch-hero-count" id="batchCountDisplay">14,700 Predictions</span>
+                                <span class="batch-hero-sub">Generated via Chronological LightGBM Regressor</span>
+                            </div>
+
+                            <!-- Summary Metrics -->
+                            <div class="batch-metrics-grid">
+                                <div class="bm-box">
+                                    <span class="bm-label">Test Set MAE</span>
+                                    <span class="bm-value text-emerald" id="batchMAE">68.70 Units</span>
+                                </div>
+                                <div class="bm-box">
+                                    <span class="bm-label">Model Engine</span>
+                                    <span class="bm-value" id="batchModelName">LightGBM Pipeline</span>
+                                </div>
+                                <div class="bm-box">
+                                    <span class="bm-label">Processing Time</span>
+                                    <span class="bm-value text-cyan" id="batchTime">0.45s</span>
+                                </div>
+                            </div>
+
+                            <div class="batch-actions-row">
+                                <button class="btn-primary" id="btnExecuteBatchForecast">
+                                    <i class="fa-solid fa-play"></i> Run Batch Forecast
+                                </button>
+                                <a href="/api/export/csv/batch_forecast" class="btn-secondary" id="btnDownloadBatchCsv">
+                                    <i class="fa-solid fa-download"></i> View & Download Predictions (CSV)
+                                </a>
+                            </div>
+
+                            <div class="academic-note-box">
+                                <i class="fa-solid fa-check-double text-emerald"></i>
+                                <span>Zero contemporaneous data leakage: contemporaneous Units Sold & Demand Forecast are strictly excluded from batch inference.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 4: FORECAST HISTORY (Matches Figure 4.5.4)                -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-history">
+                    <!-- Stat Bar -->
+                    <div class="history-stats-bar">
+                        <div class="h-stat-card">
+                            <span class="h-stat-label">30-Day Mean Sales</span>
+                            <span class="h-stat-val text-cyan" id="history30dMean">136 Units</span>
+                        </div>
+                        <div class="h-stat-card">
+                            <span class="h-stat-label">Forecast Horizon Growth</span>
+                            <span class="h-stat-val text-emerald" id="historyGrowthRate">+4.8% Trend</span>
+                        </div>
+                        <div class="h-stat-card">
+                            <span class="h-stat-label">Active Serving Engine</span>
+                            <span class="h-stat-val text-purple" id="historyServingModel">LightGBM Champion</span>
+                        </div>
+                        <div class="h-stat-card">
+                            <span class="h-stat-label">Total Persistent Records</span>
+                            <span class="h-stat-val text-amber" id="historyRecordCount">0 Runs</span>
+                        </div>
+                    </div>
+
+                    <!-- Filter & Action Bar -->
+                    <div class="table-action-bar">
+                        <div class="table-search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="historySearchInput" placeholder="Search by Run ID, Category, Model...">
+                        </div>
+                        <div class="table-filters">
+                            <select id="historyStoreFilter" class="form-select-sm">
+                                <option value="all">All Stores</option>
+                                <option value="S001">Store S001</option>
+                                <option value="S002">Store S002</option>
+                                <option value="S003">Store S003</option>
+                                <option value="S004">Store S004</option>
+                                <option value="S005">Store S005</option>
+                            </select>
+                            <a href="/api/export/csv/forecast_history" class="btn-secondary btn-sm">
+                                <i class="fa-solid fa-file-csv"></i> Export History CSV
+                            </a>
+                            <button class="btn-danger-outline btn-sm" id="btnClearHistory">
+                                <i class="fa-solid fa-trash-can"></i> Clear Records
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- History Records Table -->
+                    <div class="glass-card table-card">
+                        <div class="table-responsive">
+                            <table class="data-table" id="historyTable">
+                                <thead>
+                                    <tr>
+                                        <th>Run ID</th>
+                                        <th>Timestamp</th>
+                                        <th>Store / SKU</th>
+                                        <th>Category</th>
+                                        <th>Model</th>
+                                        <th>Predicted Demand</th>
+                                        <th>Inventory Position</th>
+                                        <th>Reorder Point</th>
+                                        <th>Stockout Risk</th>
+                                        <th>Recommended Order</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBody">
+                                    <tr><td colspan="12" class="text-center text-muted">No forecast runs recorded yet. Generate a forecast to log persistent runs.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 5: INVENTORY RECOMMENDATION (Matches Figure 4.5.5)        -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-inventory">
+                    <!-- Status Header Banner -->
+                    <div class="recommendation-header-banner" id="invHeaderBanner">
+                        <div class="banner-badge-box">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span id="invHeaderPriorityText">REORDER REQUIRED - High Priority</span>
+                        </div>
+                        <span class="banner-timestamp" id="invHeaderTimestamp">Continuous Review Dynamic Sizing Engine</span>
+                    </div>
+
+                    <!-- Two Formula Breakdown Cards -->
+                    <div class="two-column-layout">
+                        <!-- Left: Formula Parameters (Continuous Review) -->
+                        <div class="glass-card formula-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-square-root-variable text-cyan"></i>
+                                    <h3>FORMULA PARAMETERS (Continuous Review)</h3>
+                                </div>
+                                <span class="tag-pill">Operations Research</span>
+                            </div>
+
+                            <div class="formula-specs-list">
+                                <div class="formula-spec-item">
+                                    <span class="spec-label">Lead Time (L):</span>
+                                    <span class="spec-value" id="formulaLeadTime">3 days</span>
+                                </div>
+                                <div class="formula-spec-item">
+                                    <span class="spec-label">Cycle Service Level (CSL):</span>
+                                    <span class="spec-value" id="formulaCSL">95% (Z = 1.65)</span>
+                                </div>
+                                <div class="formula-spec-item">
+                                    <span class="spec-label">Daily Demand Std Dev (σ_d):</span>
+                                    <span class="spec-value" id="formulaStdDev">25.0 units</span>
+                                </div>
+                                <div class="formula-math-box">
+                                    <div class="math-title">Safety Stock (SS):</div>
+                                    <div class="math-equation">SS = Z × σ_d × √L ≈ 1.65 × 25.0 × 1.732 ≈ 35 Units</div>
+                                </div>
+                                <div class="formula-math-box">
+                                    <div class="math-title">Reorder Point (ROP):</div>
+                                    <div class="math-equation">ROP = (Average Daily Demand × L) + SS ≈ (150 × 3) + 35 = 485 Units</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Dynamic Replenishment Sizing -->
+                        <div class="glass-card replenishment-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-boxes-stacked text-emerald"></i>
+                                    <h3>DYNAMIC REPLENISHMENT SIZING</h3>
+                                </div>
+                                <span class="tag-pill">Order Sizing</span>
+                            </div>
+
+                            <div class="replenishment-specs-list">
+                                <div class="formula-spec-item">
+                                    <span class="spec-label">Current On-Hand Stock:</span>
+                                    <span class="spec-value" id="replenishCurrentStock">180 units</span>
+                                </div>
+                                <div class="formula-spec-item">
+                                    <span class="spec-label">Incoming Open Orders:</span>
+                                    <span class="spec-value" id="replenishIncomingOrders">0 units</span>
+                                </div>
+                                <div class="formula-spec-item">
+                                    <span class="spec-label">Stock Gap (ROP − Inventory Position):</span>
+                                    <span class="spec-value text-rose" id="replenishStockGap">485 − 180 = 305 units</span>
+                                </div>
+                                <div class="formula-math-box bg-highlight">
+                                    <div class="math-title">Recommended Order Quantity (Q):</div>
+                                    <div class="math-equation text-emerald">Q = max(0, Target Stock − Inventory Position) = <strong>320 Units</strong></div>
+                                </div>
+                                <div class="formula-math-box">
+                                    <div class="math-title">Economic Order Quantity (EOQ):</div>
+                                    <div class="math-equation">EOQ = √(2DS/H) where D=54,750, S=₹50, H=₹2.50 → EOQ ≈ <strong>405 Units</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Action Bar -->
+                    <div class="inventory-bottom-bar">
+                        <div class="cost-estimate-box">
+                            <span class="ce-label">ESTIMATED REPLENISHMENT COST:</span>
+                            <span class="ce-value" id="invEstimatedCost">₹14,400.00</span>
+                            <span class="ce-sub">Q × Unit Price (₹45.00)</span>
+                        </div>
+                        <div class="order-up-to-box">
+                            <span class="out-label">ORDER UP-TO LEVEL (S):</span>
+                            <span class="out-value" id="invOrderUpToLevel">805 Units</span>
+                            <span class="out-sub">ROP + Q</span>
+                        </div>
+                        <div class="advisory-btn-box">
+                            <a href="/api/export/pdf/inventory" class="btn-primary" id="btnDownloadInventoryPdf">
+                                <i class="fa-solid fa-file-pdf"></i> Download Store Replenishment PDF
+                            </a>
+                            <span class="advisory-note">Advisory recommendation only; no automated supplier PO submitted.</span>
+                        </div>
+                    </div>
+
+                    <!-- Store 20-SKU Full Replenishment Table -->
+                    <div class="glass-card table-card" style="margin-top: 20px;">
+                        <div class="card-header-bar">
+                            <div class="header-left">
+                                <i class="fa-solid fa-table-cells text-cyan"></i>
+                                <h3>Full Store Inventory Health & Replenishment Matrix (20 Products)</h3>
+                            </div>
+                            <div class="header-controls">
+                                <a href="/api/export/csv/inventory_recommendations" class="btn-secondary btn-sm">
+                                    <i class="fa-solid fa-download"></i> Export Matrix CSV
+                                </a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table" id="storeMatrixTable">
+                                <thead>
+                                    <tr>
+                                        <th>SKU ID</th>
+                                        <th>Product Name</th>
+                                        <th>Category</th>
+                                        <th>Unit Price</th>
+                                        <th>On-Hand Stock</th>
+                                        <th>Predicted Demand</th>
+                                        <th>Safety Stock</th>
+                                        <th>Reorder Point</th>
+                                        <th>Stockout Risk</th>
+                                        <th>Order Qty</th>
+                                        <th>Health Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="storeMatrixTableBody">
+                                    <!-- Populated via API -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 6: DEMAND BY CATEGORY (Matches Figure 4.5.6)             -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-category">
+                    <div class="two-column-layout">
+                        <!-- Left: Predicted Units Sold by Category -->
+                        <div class="glass-card category-bar-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-chart-simple text-cyan"></i>
+                                    <h3>Predicted Units Sold by Category</h3>
+                                </div>
+                                <span class="tag-pill">Total Catalog Volume</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="categoryBarChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Right: Category Market Share Donut Chart -->
+                        <div class="glass-card category-donut-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-chart-pie text-purple"></i>
+                                    <h3>Category Market Share (%)</h3>
+                                </div>
+                                <span class="tag-pill" id="catTotalUnitsPill">14,700 Test Units</span>
+                            </div>
+                            <div class="chart-wrapper donut-wrapper">
+                                <canvas id="categoryDonutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Summary Cards & Store Matrix -->
+                    <div class="category-summary-grid">
+                        <div class="cat-stat-box card-emerald">
+                            <span class="cs-label">Highest Demand Category</span>
+                            <span class="cs-value" id="catHighName">Electronics</span>
+                            <span class="cs-sub" id="catHighUnits">3,004 Units (₹1,35,000)</span>
+                        </div>
+                        <div class="cat-stat-box card-rose">
+                            <span class="cs-label">Lowest Demand Category</span>
+                            <span class="cs-value" id="catLowName">Toys</span>
+                            <span class="cs-sub" id="catLowUnits">2,858 Units (₹85,000)</span>
+                        </div>
+                        <div class="cat-stat-box card-cyan">
+                            <span class="cs-label">Total Catalog Sales</span>
+                            <span class="cs-value" id="catTotalVolume">14,700 Units</span>
+                            <span class="cs-sub">Across 5 Stores & 20 SKUs</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 7: SALES TREND & SEASONALITY (Feature 7)                  -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-seasonality">
+                    <div class="metric-cards-grid">
+                        <div class="metric-card card-cyan">
+                            <div class="card-top"><span>Total Historical Units Sold</span><i class="fa-solid fa-chart-line"></i></div>
+                            <div class="card-value-row"><span class="card-value" id="seasonTotalSales">9,975,582</span></div>
+                            <span class="badge-sub">Full 2-Year Dataset (73,100 Rows)</span>
+                        </div>
+                        <div class="metric-card card-emerald">
+                            <div class="card-top"><span>Average Daily SKU Demand</span><i class="fa-solid fa-calculator"></i></div>
+                            <div class="card-value-row"><span class="card-value" id="seasonAvgDaily">136.5</span><span class="card-unit">Units</span></div>
+                            <span class="badge-sub">Mean Across 100 SKUs</span>
+                        </div>
+                        <div class="metric-card card-amber">
+                            <div class="card-top"><span>Peak Demand Date</span><i class="fa-solid fa-calendar-star"></i></div>
+                            <div class="card-value-row"><span class="card-value" id="seasonPeakDate">2022-06-21</span></div>
+                            <span class="badge-sub" id="seasonPeakUnits">Volume: 17,840 Units</span>
+                        </div>
+                        <div class="metric-card card-purple">
+                            <div class="card-top"><span>Promotion Uplift</span><i class="fa-solid fa-bullhorn"></i></div>
+                            <div class="card-value-row"><span class="card-value" id="seasonPromoUplift">+9.2%</span></div>
+                            <span class="badge-sub">Promotional vs. Regular Days</span>
+                        </div>
+                    </div>
+
+                    <div class="two-column-layout" style="margin-top: 20px;">
+                        <!-- Monthly Trend Chart -->
+                        <div class="glass-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-chart-area text-cyan"></i>
+                                    <h3>Monthly Sales Trend (2022 – 2024)</h3>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="monthlyTrendChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Day of Week Distribution -->
+                        <div class="glass-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-calendar-week text-emerald"></i>
+                                    <h3>Day of Week Sales Distribution</h3>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="dowChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seasonality Breakdown & Academic Disclaimer -->
+                    <div class="two-column-layout" style="margin-top: 20px;">
+                        <div class="glass-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-sun text-amber"></i>
+                                    <h3>Seasonal Demand Comparison</h3>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="seasonChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-scale-balanced text-purple"></i>
+                                    <h3>Academic Methodology & Limitations</h3>
+                                </div>
+                            </div>
+                            <div class="academic-text-content">
+                                <h4>Observational vs. Causal Interpretation</h4>
+                                <p>Historical variations across seasons and promotional periods reflect empirical observational averages. In retail data science, observing higher sales during summer or promotional dates indicates statistical correlation but does not constitute controlled causal proof without randomized A/B experimentation.</p>
+                                <h4>Data Span Limitations</h4>
+                                <p>The dataset encompasses exactly 731 chronological days (January 1, 2022 to January 1, 2024). Consequently, annual seasonal transitions are observed across two full cycles, which is sufficient for non-parametric regression but requires continuous monitoring in live deployment.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 8: PRICE & PROMOTION IMPACT & WHAT-IF (Feature 8)        -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-pricing">
+                    <div class="two-column-layout">
+                        <!-- Price Scatter & Discount Impact -->
+                        <div class="glass-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-chart-line text-cyan"></i>
+                                    <h3>Price vs. Units Sold (Empirical Scatter)</h3>
+                                </div>
+                                <span class="tag-pill">250 Stratified Samples</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="priceScatterChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-percent text-emerald"></i>
+                                    <h3>Demand by Discount Tier</h3>
+                                </div>
+                                <span class="tag-pill">Promotional Tiers</span>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="discountBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WHAT-IF SCENARIO SIMULATOR -->
+                    <div class="glass-card simulator-card" style="margin-top: 20px;">
+                        <div class="card-header-bar">
+                            <div class="header-left">
+                                <i class="fa-solid fa-wand-magic-sparkles text-purple"></i>
+                                <h3>Interactive What-If Scenario Simulator</h3>
+                            </div>
+                            <span class="badge-status-pill pill-model">Live ML Engine Inference</span>
+                        </div>
+
+                        <div class="simulator-body-grid">
+                            <!-- Sliders Column -->
+                            <div class="sim-sliders-col">
+                                <div class="slider-group">
+                                    <div class="slider-label-row">
+                                        <span><i class="fa-solid fa-tag"></i> Unit Retail Price (₹)</span>
+                                        <span class="slider-val-badge" id="simPriceVal">₹45.00</span>
+                                    </div>
+                                    <input type="range" id="simPriceSlider" min="5" max="100" step="1" value="45" class="custom-slider">
+                                </div>
+
+                                <div class="slider-group">
+                                    <div class="slider-label-row">
+                                        <span><i class="fa-solid fa-percent"></i> Promotional Discount (%)</span>
+                                        <span class="slider-val-badge" id="simDiscountVal">15%</span>
+                                    </div>
+                                    <input type="range" id="simDiscountSlider" min="0" max="50" step="5" value="15" class="custom-slider">
+                                </div>
+
+                                <div class="slider-group">
+                                    <div class="slider-label-row">
+                                        <span><i class="fa-solid fa-shop-slash"></i> Competitor Price (₹)</span>
+                                        <span class="slider-val-badge" id="simCompPriceVal">₹48.00</span>
+                                    </div>
+                                    <input type="range" id="simCompSlider" min="5" max="100" step="1" value="48" class="custom-slider">
+                                </div>
+
+                                <div class="slider-group">
+                                    <div class="slider-label-row">
+                                        <span><i class="fa-solid fa-boxes"></i> Current Inventory Level</span>
+                                        <span class="slider-val-badge" id="simInventoryVal">180 Units</span>
+                                    </div>
+                                    <input type="range" id="simInventorySlider" min="0" max="600" step="10" value="180" class="custom-slider">
+                                </div>
+                            </div>
+
+                            <!-- Live Simulation Output Column -->
+                            <div class="sim-results-col">
+                                <div class="sim-kpi-grid">
+                                    <div class="sim-kpi-card">
+                                        <span class="sim-kpi-label">Simulated Daily Demand</span>
+                                        <span class="sim-kpi-value text-cyan" id="simResultDemand">153 Units</span>
+                                        <span class="sim-kpi-sub" id="simDeltaDemand">+12 Units vs Baseline</span>
+                                    </div>
+                                    <div class="sim-kpi-card">
+                                        <span class="sim-kpi-label">Simulated Expected Revenue</span>
+                                        <span class="sim-kpi-value text-emerald" id="simResultRevenue">₹5,852.25</span>
+                                        <span class="sim-kpi-sub" id="simDeltaRevenue">Daily gross sales</span>
+                                    </div>
+                                    <div class="sim-kpi-card">
+                                        <span class="sim-kpi-label">Simulated Stockout Risk</span>
+                                        <span class="sim-kpi-value text-rose" id="simResultRisk">18.5%</span>
+                                        <span class="sim-kpi-sub" id="simRiskNotice">During 3-day lead time</span>
+                                    </div>
+                                    <div class="sim-kpi-card">
+                                        <span class="sim-kpi-label">Simulated Days of Supply</span>
+                                        <span class="sim-kpi-value text-amber" id="simResultSupply">1.2 Days</span>
+                                        <span class="sim-kpi-sub">Before stock exhaustion</span>
+                                    </div>
+                                </div>
+
+                                <div class="academic-note-box">
+                                    <i class="fa-solid fa-triangle-exclamation text-amber"></i>
+                                    <span>Simulations apply the trained machine learning pipeline. Simulated results represent model-based scenarios under observed statistical relationships, not guaranteed real-world outcomes.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 9: STOCKOUT RISK ALERTS (Feature 9)                      -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-alerts">
+                    <!-- Summary Alert Severity Counters -->
+                    <div class="alert-counters-grid">
+                        <div class="alert-counter-card card-rose">
+                            <span class="ac-number" id="alertCriticalCount">0</span>
+                            <span class="ac-label">Critical Stockouts (Immediate Action)</span>
+                        </div>
+                        <div class="alert-counter-card card-amber">
+                            <span class="ac-number" id="alertWarningCount">0</span>
+                            <span class="ac-label">Reorder Triggered (Below ROP)</span>
+                        </div>
+                        <div class="alert-counter-card card-emerald">
+                            <span class="ac-number" id="alertOptimalCount">0</span>
+                            <span class="ac-label">Optimal Stock Levels</span>
+                        </div>
+                        <div class="alert-counter-card card-cyan">
+                            <span class="ac-number" id="alertOverstockCount">0</span>
+                            <span class="ac-label">Overstocked Products</span>
+                        </div>
+                    </div>
+
+                    <!-- Alerts Table & Controls -->
+                    <div class="glass-card table-card" style="margin-top: 20px;">
+                        <div class="table-action-bar">
+                            <div class="table-search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="alertSearchInput" placeholder="Filter alerts by SKU, Category, Store...">
+                            </div>
+                            <div class="table-filters">
+                                <select id="alertSeverityFilter" class="form-select-sm">
+                                    <option value="all">All Severities</option>
+                                    <option value="danger">Critical Stockout</option>
+                                    <option value="warning">Reorder Needed</option>
+                                    <option value="info">Overstocked</option>
+                                    <option value="success">Optimal</option>
+                                </select>
+                                <a href="/api/export/csv/stockout_alerts" class="btn-secondary btn-sm">
+                                    <i class="fa-solid fa-file-csv"></i> Export Alerts CSV
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table" id="alertsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Urgency Rank</th>
+                                        <th>Store</th>
+                                        <th>SKU / Product</th>
+                                        <th>Category</th>
+                                        <th>Current Stock</th>
+                                        <th>ROP</th>
+                                        <th>Stockout Risk</th>
+                                        <th>Recommended Order</th>
+                                        <th>Severity</th>
+                                        <th>Reason & Policy Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alertsTableBody">
+                                    <!-- Populated via API -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 10: MODEL BENCHMARK & XAI (Feature 11 + Phase 2)          -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-benchmark">
+                    <!-- Academic Performance Comparison Table -->
+                    <div class="glass-card table-card">
+                        <div class="card-header-bar">
+                            <div class="header-left">
+                                <i class="fa-solid fa-award text-amber"></i>
+                                <h3>Official Benchmark Evaluation Matrix (Chronological 80/20 Test Set: 14,700 Rows)</h3>
+                            </div>
+                            <a href="/api/export/pdf/benchmark" class="btn-secondary btn-sm">
+                                <i class="fa-solid fa-file-pdf"></i> Download Audit PDF
+                            </a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table" id="benchmarkTable">
+                                <thead>
+                                    <tr>
+                                        <th>Model Architecture</th>
+                                        <th>Prediction Target</th>
+                                        <th>MAE (Units)</th>
+                                        <th>RMSE (Units)</th>
+                                        <th>R² Score</th>
+                                        <th>WAPE (%)</th>
+                                        <th>Data Leakage Status</th>
+                                        <th>Operational Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="benchmarkTableBody">
+                                    <!-- Populated via API -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Explainable AI (XAI) Global Feature Importance -->
+                    <div class="two-column-layout" style="margin-top: 20px;">
+                        <div class="glass-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-tree text-emerald"></i>
+                                    <h3>Global LightGBM Feature Importance (Split / Gain)</h3>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="lgbImportanceChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <div class="card-header-bar">
+                                <div class="header-left">
+                                    <i class="fa-solid fa-chart-column text-cyan"></i>
+                                    <h3>Linear Regression Standardized Coefficients</h3>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="lrCoefChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Critical Data Leakage Audit Findings Card -->
+                    <div class="glass-card" style="margin-top: 20px;">
+                        <div class="card-header-bar">
+                            <div class="header-left">
+                                <i class="fa-solid fa-shield-virus text-rose"></i>
+                                <h3>Data Leakage Audit & Academic Methodology Defense</h3>
+                            </div>
+                        </div>
+                        <div class="academic-text-content">
+                            <h4>1. Inverted Task & Data Leakage Resolution</h4>
+                            <p>In raw Kaggle formulations and early student projects, models were trained to predict an artificial column named <code>Demand Forecast</code> using contemporaneous <code>Units Sold</code>. This produced an artificial R² = 0.9937 because same-day sales is an outcome variable. StockSense AI solved this by designating actual future sales (<code>Units Sold</code>) as the true prediction target, eliminating contemporaneous leakage entirely.</p>
+                            <h4>2. Strict Temporal Validation vs Random Shuffling</h4>
+                            <p>Random train-test splits shuffle future observations into the past. StockSense AI strictly split data chronologically at <strong>August 8, 2023</strong>: 58,400 training observations (80%) vs. 14,700 testing observations (20%).</p>
+                            <h4>3. Transparent Feature Importance vs. Causal Claims</h4>
+                            <p>Feature importance scores identify which variables the decision trees split on most frequently to reduce mean squared error. They do not constitute guaranteed directional or causal effects.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- PANE 11: REPORTS & EXPORT HUB (Feature 10)                     -->
+                <!-- ============================================================== -->
+                <section class="content-pane" id="pane-reports">
+                    <div class="card-header-bar">
+                        <div class="header-left">
+                            <i class="fa-solid fa-folder-closed text-cyan"></i>
+                            <h3>Publication-Quality Report Downloads & Data Exports</h3>
+                        </div>
+                        <span class="tag-pill">PDF & CSV Generators</span>
+                    </div>
+
+                    <!-- Reports Grid -->
+                    <div class="reports-hub-grid">
+                        <!-- Report 1 -->
+                        <div class="report-download-card">
+                            <div class="rd-icon text-cyan"><i class="fa-solid fa-file-pdf"></i></div>
+                            <div class="rd-content">
+                                <h4>Single SKU Demand Forecast Report</h4>
+                                <p>Comprehensive operational forecast, 95% confidence intervals, safety stock buffer, and continuous-review inventory recommendations.</p>
+                                <a href="/api/export/pdf/forecast" class="btn-primary btn-sm">
+                                    <i class="fa-solid fa-download"></i> Download Forecast PDF
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Report 2 -->
+                        <div class="report-download-card">
+                            <div class="rd-icon text-emerald"><i class="fa-solid fa-boxes-packing"></i></div>
+                            <div class="rd-content">
+                                <h4>Store Inventory Replenishment Report</h4>
+                                <p>Multi-SKU replenishment matrix across all 20 store products, calculating reorder points, stockout risk probabilities, and order sizing.</p>
+                                <a href="/api/export/pdf/inventory" class="btn-primary btn-sm">
+                                    <i class="fa-solid fa-download"></i> Download Replenishment PDF
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Report 3 -->
+                        <div class="report-download-card">
+                            <div class="rd-icon text-amber"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <div class="rd-content">
+                                <h4>Model Benchmark & Academic Audit Report</h4>
+                                <p>Complete college evaluation matrix comparing Naive baselines, Linear Regression, Ridge, and LightGBM with data leakage resolution.</p>
+                                <a href="/api/export/pdf/benchmark" class="btn-primary btn-sm">
+                                    <i class="fa-solid fa-download"></i> Download Audit PDF
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Report 4 -->
+                        <div class="report-download-card">
+                            <div class="rd-icon text-purple"><i class="fa-solid fa-chart-pie"></i></div>
+                            <div class="rd-content">
+                                <h4>Category Demand & Market Share Report</h4>
+                                <p>Aggregated sales breakdown, revenue distribution, and market share percentages across all 5 retail categories.</p>
+                                <a href="/api/export/pdf/category" class="btn-primary btn-sm">
+                                    <i class="fa-solid fa-download"></i> Download Category PDF
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Report 5 -->
+                        <div class="report-download-card featured-report-card">
+                            <div class="rd-icon text-rose"><i class="fa-solid fa-award"></i></div>
+                            <div class="rd-content">
+                                <h4>Academic Capstone Project Submission Summary</h4>
+                                <p>Executive summary covering system architecture, operations research formulas, chronological test metrics, and Viva presentation defense.</p>
+                                <a href="/api/export/pdf/academic_summary" class="btn-primary btn-sm btn-featured">
+                                    <i class="fa-solid fa-download"></i> Download Capstone Summary PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CSV Raw Data Exports Section -->
+                    <div class="glass-card" style="margin-top: 25px;">
+                        <div class="card-header-bar">
+                            <div class="header-left">
+                                <i class="fa-solid fa-file-csv text-emerald"></i>
+                                <h3>Raw CSV Datasets & Computed Audit Exports</h3>
+                            </div>
+                        </div>
+                        <div class="csv-exports-list">
+                            <div class="csv-item">
+                                <div><strong>Forecast History Runs (CSV)</strong> — Persistent SQLite audit logs of real inference runs.</div>
+                                <a href="/api/export/csv/forecast_history" class="btn-secondary btn-sm"><i class="fa-solid fa-download"></i> Download CSV</a>
+                            </div>
+                            <div class="csv-item">
+                                <div><strong>Multi-SKU Stockout Risk Alerts (CSV)</strong> — Ranked table of all 100 SKUs with calculated stock gaps and urgency scores.</div>
+                                <a href="/api/export/csv/stockout_alerts" class="btn-secondary btn-sm"><i class="fa-solid fa-download"></i> Download CSV</a>
+                            </div>
+                            <div class="csv-item">
+                                <div><strong>Batch Forecast Predictions (CSV)</strong> — Generated model predictions for batch validation.</div>
+                                <a href="/api/export/csv/batch_forecast" class="btn-secondary btn-sm"><i class="fa-solid fa-download"></i> Download CSV</a>
+                            </div>
+                            <div class="csv-item">
+                                <div><strong>Store Inventory Matrix (CSV)</strong> — Full snapshot of current stock, ROP, safety stock, and recommended orders.</div>
+                                <a href="/api/export/csv/inventory_recommendations" class="btn-secondary btn-sm"><i class="fa-solid fa-download"></i> Download CSV</a>
+                            </div>
+                        </div>
+
+                        <!-- Explicit Currency Assumption Notice -->
+                        <div class="currency-disclaimer-box" style="margin-top: 18px; padding: 12px 16px; border-radius: 8px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.3); font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                            <strong style="color: #60a5fa;"><i class="fa-solid fa-circle-info"></i> Enterprise Currency & Numbering Specification:</strong>
+                            All monetary valuations across StockSense AI (product prices, competitor benchmarks, replenishment holding costs, and projected revenues) are denominated in <strong>Indian Rupees (INR ₹)</strong> formatted using the <strong>Indian numbering system (Lakhs & Crores)</strong> in compliance with <code>en-IN</code> localization standards. As the underlying Kaggle retail inventory dataset contains dimensionless numeric pricing without explicit ISO currency codes, values are directly evaluated in INR without arbitrary foreign currency exchange conversion.
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Notification Toast Element -->
+    <div class="toast-notification" id="toastNotification">
+        <i class="fa-solid fa-circle-check toast-icon"></i>
+        <span class="toast-message" id="toastMessage">Action completed successfully.</span>
+    </div>
+
+    <!-- Script -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

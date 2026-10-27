@@ -1,0 +1,259 @@
+{
+    "stores": [
+        "S001",
+        "S002",
+        "S003",
+        "S004",
+        "S005"
+    ],
+    "products": [
+        "P0001",
+        "P0002",
+        "P0003",
+        "P0004",
+        "P0005",
+        "P0006",
+        "P0007",
+        "P0008",
+        "P0009",
+        "P0010",
+        "P0011",
+        "P0012",
+        "P0013",
+        "P0014",
+        "P0015",
+        "P0016",
+        "P0017",
+        "P0018",
+        "P0019",
+        "P0020"
+    ],
+    "categories": [
+        "Clothing",
+        "Electronics",
+        "Furniture",
+        "Groceries",
+        "Toys"
+    ],
+    "regions": [
+        "East",
+        "North",
+        "South",
+        "West"
+    ],
+    "weather_conditions": [
+        "Cloudy",
+        "Rainy",
+        "Snowy",
+        "Sunny"
+    ],
+    "seasons": [
+        "Autumn",
+        "Spring",
+        "Summer",
+        "Winter"
+    ],
+    "sku_catalogue": {
+        "P0001": {
+            "name": "Product 0001",
+            "category": "Groceries",
+            "base_price": 33.5,
+            "historical_mean_sales": 136.3,
+            "historical_std_sales": 109.3
+        },
+        "P0002": {
+            "name": "Product 0002",
+            "category": "Toys",
+            "base_price": 63.01,
+            "historical_mean_sales": 133.5,
+            "historical_std_sales": 106.4
+        },
+        "P0003": {
+            "name": "Product 0003",
+            "category": "Toys",
+            "base_price": 27.99,
+            "historical_mean_sales": 135.0,
+            "historical_std_sales": 108.4
+        },
+        "P0004": {
+            "name": "Product 0004",
+            "category": "Toys",
+            "base_price": 32.72,
+            "historical_mean_sales": 135.6,
+            "historical_std_sales": 109.3
+        },
+        "P0005": {
+            "name": "Product 0005",
+            "category": "Electronics",
+            "base_price": 73.64,
+            "historical_mean_sales": 137.8,
+            "historical_std_sales": 106.9
+        },
+        "P0006": {
+            "name": "Product 0006",
+            "category": "Groceries",
+            "base_price": 76.83,
+            "historical_mean_sales": 136.0,
+            "historical_std_sales": 108.8
+        },
+        "P0007": {
+            "name": "Product 0007",
+            "category": "Furniture",
+            "base_price": 34.16,
+            "historical_mean_sales": 136.6,
+            "historical_std_sales": 110.5
+        },
+        "P0008": {
+            "name": "Product 0008",
+            "category": "Clothing",
+            "base_price": 97.99,
+            "historical_mean_sales": 133.7,
+            "historical_std_sales": 108.7
+        },
+        "P0009": {
+            "name": "Product 0009",
+            "category": "Electronics",
+            "base_price": 20.74,
+            "historical_mean_sales": 137.4,
+            "historical_std_sales": 110.6
+        },
+        "P0010": {
+            "name": "Product 0010",
+            "category": "Toys",
+            "base_price": 59.99,
+            "historical_mean_sales": 135.8,
+            "historical_std_sales": 109.7
+        },
+        "P0011": {
+            "name": "Product 0011",
+            "category": "Furniture",
+            "base_price": 58.53,
+            "historical_mean_sales": 136.6,
+            "historical_std_sales": 108.2
+        },
+        "P0012": {
+            "name": "Product 0012",
+            "category": "Clothing",
+            "base_price": 58.25,
+            "historical_mean_sales": 134.5,
+            "historical_std_sales": 107.7
+        },
+        "P0013": {
+            "name": "Product 0013",
+            "category": "Toys",
+            "base_price": 43.6,
+            "historical_mean_sales": 137.0,
+            "historical_std_sales": 108.1
+        },
+        "P0014": {
+            "name": "Product 0014",
+            "category": "Clothing",
+            "base_price": 78.11,
+            "historical_mean_sales": 138.9,
+            "historical_std_sales": 110.2
+        },
+        "P0015": {
+            "name": "Product 0015",
+            "category": "Clothing",
+            "base_price": 92.99,
+            "historical_mean_sales": 138.8,
+            "historical_std_sales": 109.9
+        },
+        "P0016": {
+            "name": "Product 0016",
+            "category": "Electronics",
+            "base_price": 21.9,
+            "historical_mean_sales": 139.1,
+            "historical_std_sales": 109.4
+        },
+        "P0017": {
+            "name": "Product 0017",
+            "category": "Toys",
+            "base_price": 21.07,
+            "historical_mean_sales": 136.9,
+            "historical_std_sales": 107.9
+        },
+        "P0018": {
+            "name": "Product 0018",
+            "category": "Clothing",
+            "base_price": 19.57,
+            "historical_mean_sales": 134.8,
+            "historical_std_sales": 108.5
+        },
+        "P0019": {
+            "name": "Product 0019",
+            "category": "Clothing",
+            "base_price": 73.28,
+            "historical_mean_sales": 136.2,
+            "historical_std_sales": 109.5
+        },
+        "P0020": {
+            "name": "Product 0020",
+            "category": "Toys",
+            "base_price": 30.24,
+            "historical_mean_sales": 138.9,
+            "historical_std_sales": 110.2
+        }
+    },
+    "dataset_rows": 73100,
+    "date_range": [
+        "2022-01-01",
+        "2024-01-01"
+    ],
+    "metrics": {
+        "Naive: Target Mean": {
+            "MAE": 88.7872,
+            "RMSE": 108.223,
+            "R2": -0.0,
+            "WAPE_pct": 65.34
+        },
+        "Naive: Yesterday Sales (Lag-1)": {
+            "MAE": 119.6988,
+            "RMSE": 153.4182,
+            "R2": -1.0097,
+            "WAPE_pct": 88.09
+        },
+        "Naive: 7-Day Rolling Average": {
+            "MAE": 93.2363,
+            "RMSE": 115.4926,
+            "R2": -0.1389,
+            "WAPE_pct": 68.61
+        },
+        "Time-Series: Exponential Smoothing (Alpha=0.2)": {
+            "MAE": 92.3813,
+            "RMSE": 114.1514,
+            "R2": -0.1126,
+            "WAPE_pct": 67.98
+        },
+        "Linear Regression (Baseline)": {
+            "MAE": 68.5861,
+            "RMSE": 87.5968,
+            "R2": 0.3448,
+            "WAPE_pct": 50.47
+        },
+        "Ridge Regression": {
+            "MAE": 68.586,
+            "RMSE": 87.5966,
+            "R2": 0.3448,
+            "WAPE_pct": 50.47
+        },
+        "LightGBM Regressor (Champion)": {
+            "MAE": 68.7028,
+            "RMSE": 87.8633,
+            "R2": 0.3408,
+            "WAPE_pct": 50.56
+        },
+        "Random Forest Regressor": {
+            "MAE": 68.8838,
+            "RMSE": 88.1217,
+            "R2": 0.337,
+            "WAPE_pct": 50.69
+        },
+        "Legacy Model (Demand Forecast Target, Leaked Units Sold)": {
+            "MAE": 7.4716,
+            "RMSE": 8.6479,
+            "R2": 0.9937,
+            "WAPE_pct": 5.32
+        }
+    }
+}

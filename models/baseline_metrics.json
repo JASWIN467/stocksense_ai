@@ -1,0 +1,56 @@
+{
+    "Naive: Target Mean": {
+        "MAE": 88.7872,
+        "RMSE": 108.223,
+        "R2": -0.0,
+        "WAPE_pct": 65.34
+    },
+    "Naive: Yesterday Sales (Lag-1)": {
+        "MAE": 119.6988,
+        "RMSE": 153.4182,
+        "R2": -1.0097,
+        "WAPE_pct": 88.09
+    },
+    "Naive: 7-Day Rolling Average": {
+        "MAE": 93.2363,
+        "RMSE": 115.4926,
+        "R2": -0.1389,
+        "WAPE_pct": 68.61
+    },
+    "Time-Series: Exponential Smoothing (Alpha=0.2)": {
+        "MAE": 92.3813,
+        "RMSE": 114.1514,
+        "R2": -0.1126,
+        "WAPE_pct": 67.98
+    },
+    "Linear Regression (Baseline)": {
+        "MAE": 68.5861,
+        "RMSE": 87.5968,
+        "R2": 0.3448,
+        "WAPE_pct": 50.47
+    },
+    "Ridge Regression": {
+        "MAE": 68.586,
+        "RMSE": 87.5966,
+        "R2": 0.3448,
+        "WAPE_pct": 50.47
+    },
+    "LightGBM Regressor (Champion)": {
+        "MAE": 68.7028,
+        "RMSE": 87.8633,
+        "R2": 0.3408,
+        "WAPE_pct": 50.56
+    },
+    "Random Forest Regressor": {
+        "MAE": 68.8838,
+        "RMSE": 88.1217,
+        "R2": 0.337,
+        "WAPE_pct": 50.69
+    },
+    "Legacy Model (Demand Forecast Target, Leaked Units Sold)": {
+        "MAE": 7.4716,
+        "RMSE": 8.6479,
+        "R2": 0.9937,
+        "WAPE_pct": 5.32
+    }
+}
