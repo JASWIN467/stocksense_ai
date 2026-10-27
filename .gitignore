@@ -32,3 +32,10 @@ desktop.ini
 # Logs & temp files
 *.log
 scratch/
+
+# Documents, reports, presentations
+*.docx
+*.doc
+*.pdf
+*.pptx
+*.ppt
